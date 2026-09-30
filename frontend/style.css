@@ -1,40 +1,40 @@
 /* ============================================================
    Theme tokens
-   Light = "Notebook" (paper, ruled lines, ink)
-   Dark  = "Chalkboard" (slate green, chalk, colored chalk)
+   Dark (default) = deep space-navy panel with cyan/violet signal accents
+   Light           = "daylight lab" — pale graph-paper alt for the toggle
    ============================================================ */
 :root {
-  --page-bg: #eef2f8;
-  --card-bg: #ffffff;
-  --rule-line: #d7e1f0;
-  --border: #d7e1f0;
-  --ink: #28324a;
-  --ink-soft: #5b6478;
-  --accent: #c97a1a;
-  --accent-hover: #a8630f;
-  --accent-soft: #fbeed9;
-  --error-bg: #fbe9e6;
-  --error-text: #a4341c;
-  --code-bg: #eef0fb;
-  --code-text: #3d3a6b;
-  --spiral: #c3cee2;
+  --page-bg: #0a0e1a;
+  --page-bg-grid: #101830;
+  --panel-bg: #111a2e;
+  --border: #223258;
+  --text: #e7ecf9;
+  --text-muted: #8b94b5;
+  --accent: #4fd8ea;
+  --accent-2: #b98eff;
+  --accent-contrast: #05141a;
+  --error-bg: #35182080;
+  --error-text: #ff9d7a;
+  --code-bg: #182541;
+  --code-text: #9fe6ef;
+  --chip-bg: #141f38;
 }
 
-[data-theme="dark"] {
-  --page-bg: #16221b;
-  --card-bg: #1f3126;
-  --rule-line: #33493a;
-  --border: #33493a;
-  --ink: #eeeae0;
-  --ink-soft: #b7c2b4;
-  --accent: #e3c468;
-  --accent-hover: #f0d47f;
-  --accent-soft: #2c3c2c;
-  --error-bg: #3a2523;
-  --error-text: #e5a493;
-  --code-bg: #223226;
-  --code-text: #d9a0b8;
-  --spiral: #3d5443;
+[data-theme="light"] {
+  --page-bg: #eef1fa;
+  --page-bg-grid: #e3e8f7;
+  --panel-bg: #ffffff;
+  --border: #d6ddf0;
+  --text: #1c2333;
+  --text-muted: #626c8c;
+  --accent: #1798ab;
+  --accent-2: #7c4fd1;
+  --accent-contrast: #f2fdff;
+  --error-bg: #fde7de;
+  --error-text: #b3441f;
+  --code-bg: #eef1fd;
+  --code-text: #1798ab;
+  --chip-bg: #f4f6fd;
 }
 
 * {
@@ -48,160 +48,373 @@ html, body {
 
 body {
   font-family: "IBM Plex Sans", -apple-system, sans-serif;
-  background: var(--page-bg);
-  color: var(--ink);
-  transition: background 0.25s ease, color 0.25s ease;
+  color: var(--text);
+  background-color: var(--page-bg);
+  background-image:
+    radial-gradient(circle at 1px 1px, var(--page-bg-grid) 1.3px, transparent 0);
+  background-size: 26px 26px;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 .page {
   display: flex;
   justify-content: center;
-  padding: 56px 16px;
+  padding: 56px 24px;
 }
 
 /* ============================================================
-   Notebook shell — the one bold, memorable element: a spiral
-   binding down the left edge of the page, like a real notebook.
+   Layout — main panel + a sidebar of suggested queries.
+   Falls back to a single column on narrower screens.
    ============================================================ */
-.notebook {
-  position: relative;
+.layout {
   width: 100%;
-  max-width: 700px;
-  background: var(--card-bg);
+  max-width: 1040px;
+  display: grid;
+  grid-template-columns: minmax(0, 700px) 250px;
+  gap: 28px;
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .layout {
+    grid-template-columns: 1fr;
+    max-width: 700px;
+  }
+}
+
+/* ============================================================
+   Main panel
+   ============================================================ */
+.panel {
+  position: relative;
+  background: var(--panel-bg);
   border: 1px solid var(--border);
-  border-radius: 4px 14px 14px 4px;
-  box-shadow: 0 18px 40px rgba(20, 30, 20, 0.10);
+  border-radius: 14px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(79, 216, 234, 0.03);
   transition: background 0.25s ease, border-color 0.25s ease;
-}
-
-.spiral {
-  position: absolute;
-  top: 28px;
-  bottom: 28px;
-  left: -13px;
-  width: 26px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.spiral::before,
-.spiral::after {
-  content: "";
-}
-
-.spiral {
-  background-image: radial-gradient(circle, var(--spiral) 0 5px, transparent 5.5px);
-  background-repeat: repeat-y;
-  background-size: 26px 30px;
-  background-position: center top;
 }
 
 .theme-toggle {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 22px;
+  right: 22px;
   display: flex;
   align-items: center;
   gap: 6px;
-  background: var(--accent-soft);
-  color: var(--ink);
+  background: var(--chip-bg);
+  color: var(--text-muted);
   border: 1px solid var(--border);
   border-radius: 999px;
   padding: 6px 12px 6px 10px;
-  font-family: inherit;
-  font-size: 0.78rem;
-  font-weight: 500;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: color 0.15s ease, border-color 0.15s ease;
 }
 
 .theme-toggle:hover {
-  background: var(--border);
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
-.theme-toggle-icon {
-  font-size: 0.95rem;
-}
-
-/* ============================================================
-   Page content
-   ============================================================ */
-.notebook-page {
-  padding: 44px 44px 36px 52px;
+.panel-inner {
+  padding: 40px 40px 34px 40px;
 }
 
 .app-header {
   margin-bottom: 30px;
-  padding-right: 90px;
+  padding-right: 80px;
+}
+
+.eyebrow-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  flex-shrink: 0;
+}
+
+.model-tag {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
 }
 
 .app-header h1 {
-  font-family: "Source Serif 4", Georgia, serif;
+  font-family: "Space Grotesk", sans-serif;
   font-weight: 600;
-  font-size: 1.9rem;
+  font-size: 1.85rem;
   line-height: 1.25;
   margin: 0 0 10px 0;
   letter-spacing: -0.01em;
 }
 
 .subtitle {
-  margin: 0;
-  color: var(--ink-soft);
-  font-size: 0.98rem;
-  max-width: 46ch;
+  margin: 0 0 20px 0;
+  color: var(--text-muted);
+  font-size: 0.97rem;
+  max-width: 48ch;
 }
 
-label {
-  display: block;
-  font-weight: 500;
-  margin-bottom: 8px;
-  font-size: 0.9rem;
-  color: var(--ink-soft);
-}
-
-textarea {
+.loss-curve {
   width: 100%;
-  padding: 14px 16px;
-  font-size: 1rem;
-  font-family: inherit;
-  color: var(--ink);
-  background: var(--page-bg);
-  border: 1.5px solid var(--border);
+  max-width: 340px;
+  height: auto;
+  display: block;
+}
+
+.converge-dot {
+  fill: var(--accent);
+  filter: drop-shadow(0 0 5px var(--accent));
+}
+
+/* ============================================================
+   Sidebar — tabs for suggested queries vs. question history
+   ============================================================ */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.sidebar-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--chip-bg);
+  border: 1px solid var(--border);
   border-radius: 8px;
-  resize: vertical;
+  padding: 3px;
+  margin-bottom: 2px;
+}
+
+.sidebar-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.74rem;
+  padding: 7px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sidebar-tab.active {
+  background: var(--panel-bg);
+  color: var(--accent);
+}
+
+.sidebar-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.query-chip {
+  text-align: left;
+  background: var(--chip-bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 11px 14px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.1s ease, color 0.15s ease;
+}
+
+.query-chip::before {
+  content: "> ";
+  color: var(--accent);
+}
+
+.query-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateX(2px);
+}
+
+/* --- History tab --- */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.history-empty {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin: 4px 2px;
+}
+
+.history-item {
+  text-align: left;
+  background: var(--chip-bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
   transition: border-color 0.15s ease;
 }
 
-[data-theme="dark"] textarea {
-  background: #182620;
+.history-item:hover {
+  border-color: var(--accent);
+}
+
+.history-item-question {
+  font-size: 0.82rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.history-item-time {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.clear-history {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.74rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.clear-history:hover {
+  border-color: var(--error-text);
+  color: var(--error-text);
+}
+
+@media (max-width: 980px) {
+  .sidebar {
+    padding-top: 0;
+  }
+  .sidebar-panel {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .query-chip,
+  .history-item {
+    flex: 1 1 auto;
+  }
+  .history-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-height: none;
+  }
+}
+
+/* ============================================================
+   Charts (rendered by Chart.js from ```chart blocks)
+   ============================================================ */
+.chart-container {
+  background: var(--chip-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  margin: 14px 0;
+}
+
+.chart-container canvas {
+  max-width: 100%;
+}
+
+/* ============================================================
+   Question input — terminal prompt style
+   ============================================================ */
+.ask-section label {
+  display: block;
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 500;
+  margin-bottom: 8px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.prompt-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--page-bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.prompt-row:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79, 216, 234, 0.12);
+}
+
+.prompt-caret {
+  font-family: "JetBrains Mono", monospace;
+  color: var(--accent);
+  font-size: 1rem;
+  line-height: 1.5;
+  padding-top: 1px;
+}
+
+textarea {
+  flex: 1;
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 1rem;
+  font-family: "IBM Plex Sans", sans-serif;
+  resize: vertical;
+  padding: 0;
 }
 
 textarea:focus {
   outline: none;
-  border-color: var(--accent);
+}
+
+textarea::placeholder {
+  color: var(--text-muted);
 }
 
 .ask-button {
   margin-top: 14px;
-  background: var(--accent);
-  color: #1c1608;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: var(--accent-contrast);
   border: none;
   padding: 11px 22px;
-  font-family: inherit;
-  font-size: 0.98rem;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.96rem;
   font-weight: 600;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.05s ease;
-}
-
-[data-theme="dark"] .ask-button {
-  color: #1a1608;
+  transition: filter 0.15s ease, transform 0.05s ease;
 }
 
 .ask-button:hover:not(:disabled) {
-  background: var(--accent-hover);
+  filter: brightness(1.08);
 }
 
 .ask-button:active:not(:disabled) {
@@ -210,56 +423,53 @@ textarea:focus {
 
 .ask-button:disabled {
   background: var(--border);
-  color: var(--ink-soft);
+  color: var(--text-muted);
   cursor: not-allowed;
 }
 
+/* ============================================================
+   Answer / output
+   ============================================================ */
 .answer-section {
   margin-top: 34px;
-  border-top: 1px dashed var(--border);
+  border-top: 1px solid var(--border);
   padding-top: 26px;
 }
 
 .answer-section h2 {
-  font-family: "Source Serif 4", Georgia, serif;
-  font-weight: 600;
-  font-size: 1.15rem;
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 500;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
   margin: 0 0 14px 0;
-  color: var(--ink);
+  color: var(--text-muted);
 }
 
-/* Ruled-paper texture behind the answer, like notebook lines */
 .answer-box {
   min-height: 110px;
-  background-image: repeating-linear-gradient(
-    var(--card-bg) 0,
-    var(--card-bg) 27px,
-    var(--rule-line) 28px
-  );
+  background: var(--page-bg);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 16px 20px 4px 20px;
-  line-height: 28px;
+  border-radius: 10px;
+  padding: 18px 20px;
   font-size: 0.98rem;
 }
 
 .answer-box * {
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 .answer-box .placeholder {
-  color: var(--ink-soft);
+  color: var(--text-muted);
   margin: 0;
-  line-height: 28px;
 }
 
 .answer-box h1,
 .answer-box h2,
 .answer-box h3 {
-  font-family: "Source Serif 4", Georgia, serif;
+  font-family: "Space Grotesk", sans-serif;
   margin: 18px 0 8px 0;
   line-height: 1.3;
-  color: var(--ink);
+  color: var(--text);
 }
 
 .answer-box h1:first-child,
@@ -283,20 +493,25 @@ textarea:focus {
 }
 
 .answer-box code {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: "JetBrains Mono", monospace;
   background: var(--code-bg);
   color: var(--code-text);
   padding: 2px 6px;
   border-radius: 5px;
-  font-size: 0.88em;
+  font-size: 0.85em;
 }
 
 .answer-box pre {
-  background: var(--ink);
-  color: var(--page-bg);
+  background: #060a14;
+  color: var(--code-text);
   padding: 14px;
   border-radius: 8px;
   overflow-x: auto;
+  border: 1px solid var(--border);
+}
+
+[data-theme="light"] .answer-box pre {
+  background: #101a30;
 }
 
 .answer-box pre code {
@@ -306,22 +521,23 @@ textarea:focus {
 }
 
 .answer-box strong {
-  color: var(--ink);
-  font-weight: 700;
+  color: var(--accent);
+  font-weight: 600;
 }
 
 .status {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--ink-soft);
+  color: var(--text-muted);
   margin-bottom: 12px;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
+  font-family: "JetBrains Mono", monospace;
 }
 
 .spinner {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
   border: 2px solid var(--border);
   border-top-color: var(--accent);
   border-radius: 50%;
@@ -338,7 +554,7 @@ textarea:focus {
   margin-top: 12px;
   padding: 12px 14px;
   border-radius: 8px;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
 }
 
 .message.error {
@@ -352,13 +568,13 @@ textarea:focus {
 
 .app-footer {
   margin-top: 30px;
-  color: var(--ink-soft);
-  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-size: 0.76rem;
 }
 
 @media (max-width: 560px) {
-  .notebook-page {
-    padding: 40px 24px 28px 32px;
+  .panel-inner {
+    padding: 34px 22px 26px 22px;
   }
   .app-header {
     padding-right: 0;

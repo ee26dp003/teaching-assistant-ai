@@ -6,57 +6,100 @@
   <title>AI & ML Teaching Assistant</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="page">
-    <div class="notebook">
-      <div class="spiral" aria-hidden="true"></div>
+    <div class="layout">
+      <div class="panel">
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle light mode">
+          <span class="theme-toggle-icon" aria-hidden="true">☀</span>
+          <span class="theme-toggle-label">Light</span>
+        </button>
 
-      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle chalkboard mode">
-        <span class="theme-toggle-icon" aria-hidden="true">✏️</span>
-        <span class="theme-toggle-label">Chalkboard</span>
-      </button>
+        <main class="panel-inner">
+          <header class="app-header">
+            <div class="eyebrow-row">
+              <span class="dot" aria-hidden="true"></span>
+              <span class="model-tag">mistral-7b-instruct · inference: live</span>
+            </div>
+            <h1>Ask about AI &amp; Machine Learning</h1>
+            <p class="subtitle">Step-by-step explanations, with the math worked out — not just the idea.</p>
 
-      <main class="notebook-page">
-        <header class="app-header">
-          <h1>Ask about AI &amp; Machine Learning</h1>
-          <p class="subtitle">Get a clear, step-by-step explanation — with the math shown, not just the idea.</p>
-        </header>
+            <svg class="loss-curve" viewBox="0 0 420 90" aria-hidden="true">
+              <path d="M4,10 C 60,14 110,55 170,66 C 230,76 280,80 320,82 C 350,83 380,83.5 416,84"
+                    fill="none" stroke="url(#curveGradient)" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="416" cy="84" r="4.5" class="converge-dot" />
+              <defs>
+                <linearGradient id="curveGradient" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="var(--accent-2)" />
+                  <stop offset="100%" stop-color="var(--accent)" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </header>
 
-        <section class="ask-section">
-          <label for="question-input">Your question</label>
-          <textarea
-            id="question-input"
-            placeholder="e.g. Explain gradient descent using a simple analogy."
-            rows="3"
-          ></textarea>
+          <section class="ask-section">
+            <label for="question-input">query</label>
+            <div class="prompt-row">
+              <span class="prompt-caret" aria-hidden="true">&gt;</span>
+              <textarea
+                id="question-input"
+                placeholder="explain gradient descent using a simple analogy"
+                rows="3"
+              ></textarea>
+            </div>
 
-          <button id="ask-button" class="ask-button" type="button">Ask Question</button>
+            <button id="ask-button" class="ask-button" type="button">Run query</button>
 
-          <p id="validation-message" class="message error hidden"></p>
-        </section>
+            <p id="validation-message" class="message error hidden"></p>
+          </section>
 
-        <section class="answer-section">
-          <h2>Answer</h2>
+          <section class="answer-section">
+            <h2>output</h2>
 
-          <div id="status-area" class="status hidden">
-            <span class="spinner" aria-hidden="true"></span>
-            <span id="status-text">Thinking...</span>
+            <div id="status-area" class="status hidden">
+              <span class="spinner" aria-hidden="true"></span>
+              <span id="status-text">Generating...</span>
+            </div>
+
+            <div id="answer-box" class="answer-box">
+              <p class="placeholder">Your answer will appear here.</p>
+            </div>
+
+            <p id="error-message" class="message error hidden"></p>
+          </section>
+
+          <footer class="app-footer">
+            <p>Educational prototype — answers are AI-generated and may be incomplete or incorrect.</p>
+          </footer>
+        </main>
+      </div>
+
+      <aside class="sidebar" aria-label="Suggested queries and history">
+        <div class="sidebar-tabs" role="tablist">
+          <button type="button" class="sidebar-tab active" id="tab-suggested" data-tab="suggested">Suggested</button>
+          <button type="button" class="sidebar-tab" id="tab-history" data-tab="history">History</button>
+        </div>
+
+        <div class="sidebar-panel" id="panel-suggested">
+          <button type="button" class="query-chip">what is a parameter?</button>
+          <button type="button" class="query-chip">explain gradient descent simply</button>
+          <button type="button" class="query-chip">supervised vs unsupervised learning?</button>
+          <button type="button" class="query-chip">what is overfitting, and how do I fix it?</button>
+          <button type="button" class="query-chip">what does the learning rate do?</button>
+          <button type="button" class="query-chip">explain backpropagation step by step</button>
+          <button type="button" class="query-chip">plot the sigmoid function</button>
+        </div>
+
+        <div class="sidebar-panel hidden" id="panel-history">
+          <div id="history-list" class="history-list">
+            <p class="history-empty">Questions you ask will show up here.</p>
           </div>
-
-          <div id="answer-box" class="answer-box">
-            <p class="placeholder">Your answer will appear here.</p>
-          </div>
-
-          <p id="error-message" class="message error hidden"></p>
-        </section>
-
-        <footer class="app-footer">
-          <p>Educational prototype — answers are AI-generated and may be incomplete or incorrect.</p>
-        </footer>
-      </main>
+          <button type="button" id="clear-history" class="clear-history hidden">Clear history</button>
+        </div>
+      </aside>
     </div>
   </div>
 
@@ -67,6 +110,7 @@
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
